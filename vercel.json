@@ -3,6 +3,10 @@
     {
       "source": "/__/auth/(.*)",
       "destination": "https://fe-eterna-25e20.firebaseapp.com/__/auth/$1"
+    },
+    {
+      "source": "/__/firebase/(.*)",
+      "destination": "https://fe-eterna-25e20.firebaseapp.com/__/firebase/$1"
     }
   ]
 }
