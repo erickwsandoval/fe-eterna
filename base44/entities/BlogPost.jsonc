@@ -1,0 +1,40 @@
+{
+  "name": "BlogPost",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "T\u00edtulo de la noticia"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Resumen breve de la noticia"
+    },
+    "content": {
+      "type": "string",
+      "description": "Contenido completo de la noticia"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL de la imagen de portada"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Noticias",
+        "Reflexiones",
+        "Eventos",
+        "Anuncios"
+      ],
+      "default": "Noticias"
+    },
+    "published": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "summary"
+  ]
+}
