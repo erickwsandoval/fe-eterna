@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCpp67SzNFKnjhoLzHABk2Cdiobw5dQndc",
@@ -11,14 +11,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+const db = getFirestore(app);
 
-export const loginWithGoogle = () => {
-  signInWithRedirect(auth, provider);
-};
-
-export const handleRedirect = async () => {
-  const result = await getRedirectResult(auth);
-  return result?.user;
-};
+export { db, doc, setDoc };
