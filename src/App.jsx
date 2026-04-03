@@ -2,9 +2,13 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useEffect } from "react";
+
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+
+import { handleRedirect } from "./firebase"; // 🔥 IMPORTANTE
 
 import AppLayout from './components/layout/AppLayout';
 import Home from './pages/Home';
@@ -16,6 +20,16 @@ import Donation from './pages/Donation';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+
+  // 🔥 MANEJAR REDIRECT DE FIREBASE
+  useEffect(() => {
+    handleRedirect().then(user => {
+      if (user) {
+        console.log("Usuario logueado:", user);
+        alert("Bienvenido " + user.displayName);
+      }
+    });
+  }, []);
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
