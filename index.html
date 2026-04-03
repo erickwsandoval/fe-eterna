@@ -32,15 +32,21 @@
   const provider = new GoogleAuthProvider();
   const db = getFirestore(app);
 
-  window.loginWithGoogle = async function() {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      alert("Bienvenido " + result.user.displayName);
-    } catch (error) {
+  // BOTÓN LOGIN
+  window.loginWithGoogle = function() {
+    signInWithRedirect(auth, provider);
+  };
+
+  // CUANDO REGRESA DEL LOGIN
+  getRedirectResult(auth)
+    .then((result) => {
+      if (result && result.user) {
+        alert("Bienvenido " + result.user.displayName);
+      }
+    })
+    .catch((error) => {
       console.error(error);
-      alert("Error al iniciar sesión");
-    }
-  }
+    });
 </script>
 
   </body>
