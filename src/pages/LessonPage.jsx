@@ -1,4 +1,4 @@
-import { db, doc, setDoc } from "../firebase";
+import { db, doc, setDoc, getDoc } from "../firebase";
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -24,28 +24,55 @@ export default function LessonPage() {
   const [loadingProgress, setLoadingProgress] = useState(true);
 
   useEffect(() => {
-    const init = async () => {
-      const authed = await base44.auth.isAuthenticated();
-      setIsAuthenticated(authed);
+  const init = async () => {
+    const authed = await base44.auth.isAuthenticated();
+    setIsAuthenticated(authed);
 
-      if (authed) {
-        const me = await base44.auth.me();
-        setUser(me);
+    if (authed) {
+      const me = await base44.auth.me();
+      setUser(me);
 
-        const records = await base44.entities.UserProgress.filter({
-          lesson_id: lessonId,
-          course_id: courseId,
-          created_by: me.email,
-        });
+      // 🟢 1. Intentar leer desde Firebase
+      try {
+        const docRef = doc(db, "respuestas", me.email);
+        const docSnap = await getDoc(docRef);
 
-        if (records.length > 0) setProgress(records[0]);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+
+          const firebaseLesson =
+            data?.[courseId]?.[lessonId];
+
+          if (firebaseLesson) {
+            setProgress({
+              answers: firebaseLesson.answers || {},
+              completed_questions: firebaseLesson.completed_questions || [],
+              decision_accepted: firebaseLesson.decision_accepted || false
+            });
+
+            setLoadingProgress(false);
+            return; // 🔥 IMPORTANTE: ya no usa Base44
+          }
+        }
+      } catch (error) {
+        console.error("Error leyendo Firebase:", error);
       }
 
-      setLoadingProgress(false);
-    };
+      // 🔵 2. Fallback a Base44
+      const records = await base44.entities.UserProgress.filter({
+        lesson_id: lessonId,
+        course_id: courseId,
+        created_by: me.email,
+      });
 
-    init();
-  }, [courseId, lessonId]);
+      if (records.length > 0) setProgress(records[0]);
+    }
+
+    setLoadingProgress(false);
+  };
+
+  init();
+}, [courseId, lessonId]);
 
   if (!lesson || !lesson.active) {
     return (
