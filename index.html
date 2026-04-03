@@ -10,5 +10,34 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCpp67SzNFKnjhoLzHABk2Cdiobw5dQndc",
+    authDomain: "fe-eterna-25e20.firebaseapp.com",
+    projectId: "fe-eterna-25e20",
+    storageBucket: "fe-eterna-25e20.firebasestorage.app",
+    messagingSenderId: "388648911830",
+    appId: "1:388648911830:web:1841684ac4e88026dd9a77"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+  const db = getFirestore(app);
+
+  window.loginWithGoogle = async function() {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      alert("Bienvenido " + result.user.displayName);
+    } catch (error) {
+      console.error(error);
+      alert("Error al iniciar sesión");
+    }
+  }
+</script>
   </body>
 </html>
